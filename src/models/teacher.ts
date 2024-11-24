@@ -4,7 +4,7 @@
 //   last_name varchar(50) NOT NULL
 // );
 
-import { IsNumber, IsString } from "class-validator";
+import { IsNumber, IsNumberString, IsString } from "class-validator";
 
 export class NewTeacher {
   @IsString()
@@ -15,6 +15,6 @@ export class NewTeacher {
 }
 
 export class TeacherId {
-  @IsString()
+  @IsNumberString()
   teacherId: number;
 }

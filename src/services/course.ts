@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { CourseQuery, NewCourse } from "src/models/course";
+import { CourseQuery, NewCourse, RollQuery } from "src/models/course";
 import { CourseTeacher } from "src/models/courseTeacher";
+import { transformData } from "src/util/course";
 
 @Injectable()
 export class CourseService {
@@ -23,29 +24,45 @@ export class CourseService {
     INSERT INTO
     course(code, name)
     VALUES ('${code}', '${name}')
+    RETURNING *
       `);
     return res;
   }
 
-  async getTeacher(data: CourseQuery) {
+  async getDetail(data: CourseQuery) {
     const { code } = data;
+
     const res = await this.sql(`
       SELECT *
-      FROM course_teacher AS ct
-        JOIN course as c ON (c.id = course_id)
-        JOIN semester as s ON (s.id = ct.semester)
-        JOIN teacher as t ON (t.id = teacher_id)
+        FROM roll AS ct
+        NATURAL JOIN course AS c 
+        NATURAL JOIN semester AS s 
+        NATURAL JOIN teacher AS t
       WHERE c.code = '${code}'
       `);
+    const formatData = transformData(res);
 
-    return res;
+    return formatData;
+  }
+
+  async getRoll(data: RollQuery) {
+    const { rollid } = data;
+    const res = await this.sql(`
+      SELECT *
+        FROM roll AS ct
+        NATURAL JOIN course AS c 
+        NATURAL JOIN semester AS s 
+        NATURAL JOIN teacher AS t
+      WHERE rollid = '${rollid}'
+      `);
+    return res[0];
   }
 
   async addTeacher(data: CourseTeacher) {
     const { courseId, teacherId, semesterId } = data;
     await this.sql(`
       INSERT INTO
-      course_teacher (course_id, teacher_id, semester)
+      roll (courseId, teacherId, semesterId)
       VALUES ('${courseId}', '${teacherId}', '${semesterId}')
       `);
   }

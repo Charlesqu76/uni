@@ -8,30 +8,39 @@ DROP TABLE IF EXISTS semester;
 
 CREATE TABLE
     course (
-        id SERIAL PRIMARY KEY,
-        code varchar(50) UNIQUE,
+        courseId SERIAL PRIMARY KEY,
+        code varchar(50) UNIQUE NOT NULL,
         name varchar(255) NOT NULL
     );
 
 CREATE TABLE
     teacher (
-        id SERIAL PRIMARY KEY,
-        first_name varchar(50) NOT NULL,
-        last_name varchar(50) NOT NULL
+        teacherId SERIAL PRIMARY KEY,
+        firstName varchar(50) NOT NULL,
+        lastName varchar(50) NOT NULL
     );
 
 CREATE TABLE
     semester (
-        id SERIAL PRIMARY KEY,
-        year int,
-        semester int,
+        semesterId SERIAL PRIMARY KEY,
+        year int NOT NULL,
+        semester int NOT NULL,
         UNIQUE (year, semester)
     );
 
 CREATE TABLE
-    course_teacher (
-        course_id int REFERENCES course,
-        teacher_id int REFERENCES teacher,
-        semester int REFERENCES semester,
-        PRIMARY KEY (course_id, teacher_id, semester)
+    roll (
+        rollId SERIAL UNIQUE,
+        courseId int REFERENCES course,
+        teacherId int REFERENCES teacher,
+        semesterId int REFERENCES semester,
+        PRIMARY KEY (courseId, teacherId, semesterId)
+    );
+
+CREATE TABLE
+    comment (
+        commentId SERIAL PRIMARY KEY,
+        create_time timestamp default NOW (),
+        content text NOT NULL,
+        rollId int NOT NULL REFERENCES roll (rollId)
     );

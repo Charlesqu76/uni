@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post } from "@nestjs/common";
-import { CourseQuery, NewCourse } from "src/models/course";
+import { CourseQuery, NewCourse, RollQuery } from "src/models/course";
 import { CourseTeacher } from "src/models/courseTeacher";
 import { CourseService } from "src/services/course";
 
@@ -13,8 +13,13 @@ export class CourseController {
   }
 
   @Get(":code")
-  async getTeacher(@Param() query: CourseQuery) {
-    return await this.service.getTeacher(query);
+  async getDetail(@Param() query: CourseQuery) {
+    return await this.service.getDetail(query);
+  }
+
+  @Get("roll/:rollid")
+  async getRoll(@Param() query: RollQuery) {
+    return await this.service.getRoll(query);
   }
 
   @Post()

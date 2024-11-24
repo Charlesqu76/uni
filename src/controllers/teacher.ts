@@ -18,7 +18,6 @@ export class TeacherController {
 
   @Post()
   async teacher(@Body() body: NewTeacher) {
-    console.log(body);
     return await this.service.add(body);
   }
 }

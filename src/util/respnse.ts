@@ -28,6 +28,8 @@ export class TransformInterceptor<T>
         data,
       })),
       catchError((error) => {
+        console.log(error);
+
         if (error instanceof HttpException) {
           return throwError(() => ({
             success: false,

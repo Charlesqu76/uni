@@ -17,3 +17,8 @@ export class CourseQuery {
   @IsString()
   code: string;
 }
+
+export class RollQuery {
+  @IsString()
+  rollid: string;
+}
