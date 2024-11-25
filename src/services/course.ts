@@ -1,7 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { CourseQuery, NewCourse, RollQuery } from "src/models/course";
 import { CourseTeacher } from "src/models/courseTeacher";
-import { transformData } from "src/util/course";
 
 @Injectable()
 export class CourseService {
@@ -28,21 +27,29 @@ export class CourseService {
       `);
     return res;
   }
-
   async getDetail(data: CourseQuery) {
     const { code } = data;
+    const query = `
+    SELECT *
+    FROM course AS c 
+    WHERE c.code = $1
+  `;
+    const res = await this.sql(query, [code]);
+    return res[0];
+  }
 
-    const res = await this.sql(`
-      SELECT *
-        FROM roll AS ct
-        NATURAL JOIN course AS c 
-        NATURAL JOIN semester AS s 
-        NATURAL JOIN teacher AS t
-      WHERE c.code = '${code}'
-      `);
-    const formatData = transformData(res);
-
-    return formatData;
+  async getSubCourses(data: CourseQuery) {
+    const { code } = data;
+    const query = `
+    SELECT ct.*, s.*, t.*
+    FROM course AS c 
+      NATURAL JOIN roll AS ct 
+      NATURAL JOIN semester AS s
+      NATURAL JOIN teacher AS t
+    WHERE c.code = $1
+  `;
+    const res = await this.sql(query, [code]);
+    return res;
   }
 
   async getRoll(data: RollQuery) {

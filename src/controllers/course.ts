@@ -14,7 +14,11 @@ export class CourseController {
 
   @Get(":code")
   async getDetail(@Param() query: CourseQuery) {
-    return await this.service.getDetail(query);
+    const [course, list] = await Promise.all([
+      this.service.getDetail(query),
+      this.service.getSubCourses(query),
+    ]);
+    return { ...course, list };
   }
 
   @Get("roll/:rollid")

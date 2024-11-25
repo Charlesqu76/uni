@@ -1,11 +1,11 @@
-// export const insert = (first_name, last_name) => {
-//   const sql = `INSERT INTO
-//         teacher(first_name, last_name)
-//         VALUES ('${first_name}', '${last_name}')
-//         `;
-//   return sql;
-// };
+export const allTeachers = "select * from teacher";
 
-// const insert = {
-//   sql: "insert into  teacher(first_name, last_name) values ($1, $2) ",
-// };
+export const insertTeacher =
+  "insert into teacher(firstname, lastname) values ($1, $2)";
+
+export const relatedCourse = `
+    select * from roll 
+        natural join course 
+        natural join semester 
+        natural join teacher 
+    where teacherId = $1`;
